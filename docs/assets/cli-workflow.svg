@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title description">
+<title id="title">Terminal to hosted generation</title><desc id="description">CLI workflow · explanatory diagram, not a screenshot. User chooses a model and approves spending before submitting; then inspects status and output URLs.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#d0e30e"/></marker></defs>
+<rect width="960" height="420" rx="24" fill="#101413"/>
+<g font-family="sans-serif"><text x="32" y="48" fill="#d0e30e" font-size="13" letter-spacing="2">PICTUREME / CLI</text>
+<text x="32" y="87" fill="#ffffff" font-size="28" font-weight="bold">Terminal to hosted generation</text>
+<text x="32" y="115" fill="#c4ccc7" font-size="16">CLI workflow · explanatory diagram, not a screenshot</text>
+<path d="M232 216H262" stroke="#d0e30e" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M462 216H492" stroke="#d0e30e" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M692 216H722" stroke="#d0e30e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="32" y="156" width="200" height="122" rx="12" fill="#1c2420" stroke="#5b695f"/><text x="48" y="186" fill="#d0e30e" font-size="12">01 / DISCOVER</text><text x="48" y="222" fill="#ffffff" font-size="19" font-weight="bold">Choose a model</text><text x="48" y="251" fill="#c4ccc7" font-size="12">Inspect inputs + estimate</text>
+<rect x="262" y="156" width="200" height="122" rx="12" fill="#1c2420" stroke="#5b695f"/><text x="278" y="186" fill="#d0e30e" font-size="12">02 / AUTHORIZE</text><text x="278" y="222" fill="#ffffff" font-size="19" font-weight="bold">Your decision</text><text x="278" y="251" fill="#c4ccc7" font-size="12">Approve prompt + spending</text>
+<rect x="492" y="156" width="200" height="122" rx="12" fill="#1c2420" stroke="#5b695f"/><text x="508" y="186" fill="#d0e30e" font-size="12">03 / SUBMIT</text><text x="508" y="222" fill="#ffffff" font-size="19" font-weight="bold">Terminal / script</text><text x="508" y="251" fill="#c4ccc7" font-size="12">pictureme generate create</text>
+<rect x="722" y="156" width="200" height="122" rx="12" fill="#1c2420" stroke="#5b695f"/><text x="738" y="186" fill="#d0e30e" font-size="12">04 / INSPECT</text><text x="738" y="222" fill="#ffffff" font-size="19" font-weight="bold">Hosted job</text><text x="738" y="251" fill="#c4ccc7" font-size="12">Status + output URLs</text>
+<rect x="32" y="306" width="890" height="82" rx="12" fill="#2a291d" stroke="#a5af3e"/><text x="48" y="337" fill="#f2f4d6" font-size="16">Before submitting: authorize credit spending and any input-media upload.</text><text x="48" y="363" fill="#d5dac8" font-size="14">Local image paths upload automatically. Estimates are not invoices; inspect final status.</text></g></svg>

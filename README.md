@@ -1,10 +1,36 @@
-# pictureme-cli
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pictureme-lockup-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/pictureme-lockup-light.svg">
+  <img src="docs/assets/pictureme-lockup-light.svg" alt="PictureME" width="420">
+</picture>
 
-Python CLI client for the hosted PictureME API, maintained by **Jesus Pacheco / Akitá Labs**. `pictureme` and `picme` are equivalent entry points. This is not the commercial backend or a self-hosted service.
+# PictureME CLI
+
+Use PictureME from your terminal: find image and video models, upload reference
+media, submit generation jobs, and check their status and your credit balance.
+This Python client talks to the hosted PictureME API; it does not run models
+locally or include the commercial backend.
+
+## Who is it for?
+
+Creators who prefer a terminal, developers writing scripts, and operators who
+already have the required service permissions. `pictureme` and `picme` are
+interchangeable command names.
+
+**CLI or MCP?** Use this CLI when you type commands or call them from a script.
+Use [PictureME MCP](https://github.com/Pachecodes/pictureme-mcp-public) when a
+compatible AI assistant should call PictureME tools for you.
+
+## How it works
+
+![Workflow diagram: choose a model, approve spending, submit with the CLI, then inspect the hosted job](docs/assets/cli-workflow.svg)
+
+*Explanatory diagram, not a screenshot. Approval is your responsibility, not an
+automatic client safeguard.*
 
 ## Install
 
-Requires Python 3.10+. From this standalone checkout:
+Requires **Python 3.10+**. In a reviewed standalone checkout:
 
 ```bash
 python -m venv .venv
@@ -13,64 +39,59 @@ python -m pip install .
 pictureme --help
 ```
 
-Public target: https://github.com/Pachecodes/pictureme-cli-public. This is a
-publication target, not a claim that the repository is already public. Install
-only a reviewed checkout or digest-verified wheel in a fresh venv. After public
-publication, an immutable reviewed Git commit can also be installed with
-`python -m pip install "pictureme-cli @ git+https://github.com/Pachecodes/pictureme-cli-public.git@APPROVED_CLI_COMMIT"`
-(replace the placeholder with the approved SHA).
+No monorepo is needed. Use a reviewed checkout or digest-verified wheel;
+package-index publication is not asserted. See [installation](docs/installation.md)
+for approved-artifact and immutable-commit options.
 
-No monorepo siblings are required. Once an approved release is published to your package index, `python -m pip install pictureme-cli` is also possible; index publication is not asserted here.
-
-## Usage
+## Try a read first
 
 ```bash
-pictureme auth login
-pictureme auth login --no-open
 pictureme model list --image
-pictureme model get MODEL_ID
-pictureme tokens balance
-pictureme generate list
-pictureme generate get 12345
 pictureme --json model list
 ```
 
-Device login needs a PictureME account and browser approval, not a password in the CLI. Legacy `auth login --password --email you@example.com` prompts with hidden input. Public catalog reads may work without authentication; other operations require server-issued keys, scopes, permissions and credits. Client licensing does not grant service access.
+The live catalog tells you which model IDs and inputs are available. These reads
+do not submit a generation; public catalog access may work without login.
 
-Generation spends credits and uploads disclose input media to the service. Select a real model from the live registry and obtain explicit user authorization before submitting:
+## Example: make an image
 
-```bash
-pictureme generate create MODEL_ID --prompt "A landscape at sunrise" --image ./photo.jpg --wait
-```
-
-This is illustrative, NOT a smoke test. `generate cost` is a local estimate from catalog fields, not a guaranteed invoice; server billing rules prevail. Cancellation does not guarantee a refund or stop an upstream provider.
-
-## Configuration and credential safety
-
-Default origin is `https://go.pictureme.now`. Configuration names: `PICTUREME_HOST`, `PICTUREME_API_KEY`. Inject secrets from a secret manager; never commit them. Flags override environment, which overrides stored config. Avoid `--api-key` because process listings and shell history can reveal it.
-
-Config location comes from `platformdirs`. POSIX device login stores a plaintext credential in an atomically replaced mode-0600 file; this is not encrypted. Protect accounts, filesystems and backups. Non-POSIX persistence is refused; use environment credentials. Stored credentials are host-bound and not reused for a different host override. Remote hosts require HTTPS; HTTP is allowed only for loopback.
-
-`auth token` masks by default. `auth token --show`, `api-key create`, and admin `--no-redact` deliberately reveal secrets: never use them in logged terminals, CI or unattended agents. JSON login/status does not emit bearer credentials. `auth logout` clears local storage only; revoke remotely in account settings.
-
-## Permissions and limitations
-
-`model`, `upload`, `generate`, and `tokens` are service-backed clients. Server scopes, ownership and credit checks still apply. `workflow run` is unimplemented. Some `booth` commands are placeholders or depend on service endpoints; consult help rather than assuming completeness.
-
-`admin` is operator-only. Installing the client grants no role or permission. Personal keys must not be assumed to work on admin routes: server credential-class, role and scope enforcement determines access. `admin ale` requires a separate web-approved operator credential with explicit ALE scopes and a live authorized role. No server deployment or compatibility is asserted by offline tests. Never copy browser credentials or bypass a 403. Admin mutations can replace full records, publish or delete content; consult help and read current records first. Generic admin responses are redacted by default.
-
-All HTTP redirects are disabled; 3xx responses are controlled errors. Passwords,
-device exchange codes and media are never automatically forwarded. Admin API
-redaction masks entire secret-named dict/list subtrees and conventional camelCase
-keys; it is a heuristic, not proof that arbitrary output is secret-free. Explicit
-`--no-redact` and documented reveal commands intentionally print secrets.
-
-## Development and license
+Log in with `pictureme auth login` and approve the device in your browser.
+Choose a real image model from the catalog and inspect it before spending:
 
 ```bash
-python -m pip install -e '.[dev]'
-python -m pytest -q
-python -m build
+pictureme model get MODEL_ID
+pictureme generate cost MODEL_ID
+# Only after you approve the cost and prompt:
+pictureme generate create MODEL_ID --prompt "A landscape at sunrise" --wait
 ```
 
-Tests are offline. See CONTRIBUTING.md, SECURITY.md and PROVENANCE.md. MIT covers original client code only; dependency licenses and service/media terms remain separate.
+Replace `MODEL_ID` with a supported live ID. This is a paid example, **not a smoke
+test**. Waiting polls the job; inspect its final status and any output URLs.
+See [usage](docs/usage.md) for reference images and job reads.
+
+## Account, credits and privacy
+
+Authenticated operations need a PictureME account, service access and suitable
+permissions. Generations spend credits; estimates are not guaranteed invoices.
+Uploads share your input media with the service. Cancellation guarantees neither
+a provider stop nor a refund. Installing MIT code grants no account or credits.
+
+Keep keys out of logs and source control. Saved POSIX credentials are private
+plaintext files, not encrypted. See [credential safety](docs/credentials.md).
+Operator commands need separate authorization; `workflow run` is unimplemented
+and some booth commands are placeholders. See [limitations](docs/permissions.md).
+
+## Documentation
+
+- [Manual and reading guide](docs/README.md)
+- [Installation](docs/installation.md) and [usage examples](docs/usage.md)
+- [Credentials](docs/credentials.md) and [permissions](docs/permissions.md)
+- [Development and offline tests](docs/development.md)
+- [Brand assets and rights](docs/brand-assets.md)
+
+## Project and license
+
+Maintained by **Jesus Pacheco / Akitá Labs**.
+[Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) ·
+[Provenance](PROVENANCE.md) · [MIT code license](LICENSE).
+Logo/trademark rights and hosted-service terms are separate from the code license.
