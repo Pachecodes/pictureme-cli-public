@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.egg-info/
+*.pyc
+build/
+dist/
+
+.venv/
+build/
+dist/
+*.egg-info/
+.env
+.env.*
+!.env.example
+.claude/
