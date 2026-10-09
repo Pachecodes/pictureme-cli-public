@@ -296,27 +296,26 @@ UNSAFE_LOGIN_HOSTS = [
 
 @pytest.mark.parametrize(("host", "message"), UNSAFE_LOGIN_HOSTS)
 def test_auth_login_subcommand_host_rejects_unsafe_host_without_traceback(
-    tmp_path: Path, monkeypatch, host: str, message: str
+    tmp_path: Path, monkeypatch, host: str, message: str, rendered_text
 ) -> None:
     """`auth login --host <bad>` must fail as a usage error, never a traceback."""
     monkeypatch.setattr(config, "config_path", lambda: tmp_path / "config.json")
     monkeypatch.delenv("PICTUREME_HOST", raising=False)
     monkeypatch.delenv("PICTUREME_API_KEY", raising=False)
 
+    fake = FakeDeviceAPI()
+    install_fake_api(monkeypatch, fake)
     result = CliRunner().invoke(
         app,
         ["auth", "login", "--host", host, "--no-open"],
     )
 
     assert result.exit_code == 2, result.output
+    assert fake.requests == []
     assert not isinstance(result.exception, ValueError)
-    assert "Traceback" not in result.output
-    # Rich renders the usage error in a wrapping panel with border glyphs
-    # between wrapped lines, so strip the box characters and collapse
-    # whitespace before comparing.
-    flat = " ".join(result.output.replace("│", " ").split())
-    assert "Invalid value for --host" in flat
-    assert message in flat
+    plain = rendered_text(result.output)
+    assert "Traceback" not in plain
+    assert f"Invalid value for --host: {message}" in plain
 
 
 @pytest.mark.parametrize(("host", "message"), UNSAFE_LOGIN_HOSTS)

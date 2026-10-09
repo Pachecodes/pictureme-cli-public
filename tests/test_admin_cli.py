@@ -305,7 +305,7 @@ def test_template_create_rejects_a_non_object_payload_file(tmp_path, monkeypatch
     assert "object" in result.output.lower()
 
 
-def test_template_create_rejects_malformed_json_payload_file(tmp_path, monkeypatch):
+def test_template_create_rejects_malformed_json_payload_file(tmp_path, monkeypatch, rendered_text):
     payload = tmp_path / "bad.json"
     payload.write_text("{not json")
     fake = FakeAdminAPI()
@@ -315,7 +315,12 @@ def test_template_create_rejects_malformed_json_payload_file(tmp_path, monkeypat
 
     assert result.exit_code == 2
     assert fake.requests == []
-    assert "not valid JSON" in result.output
+    plain = rendered_text(result.output)
+    assert "Traceback" not in plain
+    assert (
+        "is not valid JSON: Expecting property name enclosed in double quotes: "
+        "line 1 column 2 (char 1)"
+    ) in plain
 
 
 def test_template_create_uploads_local_preview_and_reference_media(tmp_path, monkeypatch):
